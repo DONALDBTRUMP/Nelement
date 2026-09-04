@@ -10,11 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 檢出專案程式碼
+    - name: 檢出專案程式碼（包含 Git 子模組）
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - name: 設定 JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -26,7 +28,7 @@ jobs:
       run: chmod +x gradlew
 
     - name: 編譯 GPlay Debug APK
-      run: ./gradlew assembleGplayDebug
+      run: ./gradlew assembleGplayDebug --no-daemon -Dorg.gradle.jvmargs="-Xmx4096m -XX:MaxMetaspaceSize=1024m"
 
     - name: 上傳 APK 產出物
       uses: actions/upload-artifact@v4
